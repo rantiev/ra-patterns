@@ -1,36 +1,44 @@
 const subscriptions = {}
 
-export default class Mediator {
-  subscribe (topic, cb) {
-    if (!subscriptions[topic]) {
-      subscriptions[topic] = []
-    }
+export default function Mediator (obj) {
+  const channels = {}
 
-    subscriptions[topic].push(cb)
+  const mediator = {
+    subscribe: function (channel, cb) {
+      if (!channels[channel]) {
+        channels[channel] = []
+      }
 
-    return this.unsubscribe.bind(null, topic, cb)
-  }
+      channels[channel].push(cb)
 
-  unsubscribe (topic, cb) {
-    const i = subscriptions[topic].indexOf(cb)
+      return this.unsubscribe.bind(null, channel, cb)
+    },
 
-    if (i >= 0) {
-      subscriptions[topic].splice(i, 1)
-      return true
-    }
+    unsubscribe: function (channel, cb) {
+      const i = channels[channel].indexOf(cb)
 
-    return false
-  }
+      if (i >= 0) {
+        channels[channel].splice(i, 1)
+        return true
+      }
 
-  publish (topic, data) {
-    if (!subscriptions[topic]) {
       return false
-    }
+    },
 
-    subscriptions[topic].forEach(subscription => {
-      subscription.call(null, data)
-    })
+    publish: function (channel) {
+      if (!channels[channel]) {
+        return false
+      }
 
-    return true
+      const args = Array.prototype.slice.call(arguments, 1)
+
+      channels[channel].forEach(subscription => {
+        subscription.apply(null, args)
+      })
+
+      return this
+    },
   }
+
+  return obj ? Object.assign(obj, mediator) : mediator
 }
