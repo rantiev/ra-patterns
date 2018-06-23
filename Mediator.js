@@ -1,5 +1,3 @@
-const subscriptions = {}
-
 export default function Mediator (obj) {
   const channels = {}
 

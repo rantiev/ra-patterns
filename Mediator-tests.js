@@ -49,6 +49,9 @@ const customObject = {
     this.publish('oldSchoolChanges', 'arg1', 'arg2', 'arg3')
       .publish('oldSchoolChanges', 'arg4', 'arg5', 'arg6')
   },
+  component3changed: function () {
+    this.publish('component3changed', 'arg1', 'arg2', 'arg3')
+  },
   handleOldSchoolChanges: (arg1, arg2, arg3) => {
     console.log(`OldSchoolChanges handled and arguments 
       are ${arg1}, ${arg2}, ${arg3}`)
@@ -77,4 +80,6 @@ customObject.subscribe('oldSchoolChanges', isOldSchool.bind(customObject))
 setTimeout(() => {
   component3.component3changed()
   customObject.publishOldSchoolChanges()
+  customObject.component3changed()
 }, 1000)
+
